@@ -91,7 +91,7 @@ def get_slobodne_termine(datum: date) -> list:
 
 def get_sledecih_14_radnih_dana() -> list:
     dani = []
-    d = date.today()
+    d = date.today() + timedelta(days=1)
     while len(dani) < 14:
         if je_radni_dan(d):
             dani.append(d)
