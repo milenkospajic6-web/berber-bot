@@ -92,10 +92,12 @@ def get_slobodne_termine(datum: date) -> list:
 def get_sledecih_14_radnih_dana() -> list:
     dani = []
     d = date.today() + timedelta(days=1)
-    while len(dani) < 14:
-        if je_radni_dan(d):
+    count = 0
+    while len(dani) < 14 and count < 30:
+        if d.weekday() in [0, 1, 2, 3, 4, 5]:
             dani.append(d)
         d += timedelta(days=1)
+        count += 1
     return dani
 
 def glavni_meni_keyboard():
