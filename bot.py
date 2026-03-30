@@ -228,7 +228,7 @@ async def unos_imena(update: Update, context: ContextTypes.DEFAULT_TYPE):
     row = []
     for d in dani:
         lok = get_lokacija_za_datum(d)
-        label = f"{d.day}.{d.month}. ({lok[:2]})"
+        label = f"{d.day}.{d.month}. ({lok[:3]})"
         row.append(label)
         if len(row) == 2:
             buttons.append(row)
