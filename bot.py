@@ -226,9 +226,11 @@ async def unos_imena(update: Update, context: ContextTypes.DEFAULT_TYPE):
     dani = get_sledeci_radni_dani(7)
     buttons = []
     row = []
-    for d in dani:
+    labels = []
+    for i, d in enumerate(dani):
         lok = get_lokacija_za_datum(d)
-        label = f"{d.day}.{d.month}. ({lok[:3]})"
+        label = f"{i+1}. {d.day}.{d.month}. {lok[:3]}"
+        labels.append(label)
         row.append(label)
         if len(row) == 2:
             buttons.append(row)
@@ -239,7 +241,7 @@ async def unos_imena(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Cuvamo dane za referencu
     context.user_data['dani_lista'] = [d.isoformat() for d in dani]
-    context.user_data['dani_labels'] = [f"{d.day}.{d.month}. ({get_lokacija_za_datum(d)[:2]})" for d in dani]
+    context.user_data['dani_labels'] = labels
 
     legenda = "NS = Novi Sad | Si = Sid\n\n"
     await update.message.reply_text(
@@ -263,9 +265,17 @@ async def izbor_datuma(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     odabrani_idx = None
     for i, lbl in enumerate(labels):
-        if lbl in tekst or tekst in lbl:
+        if tekst == lbl or tekst in lbl or lbl in tekst:
             odabrani_idx = i
             break
+    # Pokusaj i po broju
+    if odabrani_idx is None:
+        try:
+            idx = int(tekst) - 1
+            if 0 <= idx < len(labels):
+                odabrani_idx = idx
+        except ValueError:
+            pass
 
     if odabrani_idx is None:
         await update.message.reply_text("Molimo izaberite datum sa liste.")
