@@ -94,7 +94,7 @@ async def akcija(update, context):
         btns.append(["🏠 Meni"])
         context.user_data['termini'] = termini
         await update.message.reply_text(odg+"\nIzaberite termin za otkazivanje:",
-            reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True))
+            reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True, one_time_keyboard=True))
         return OTKAZI
     if "Moji" in t:
         termini = db.get_termini_korisnika(update.effective_user.id)
@@ -129,6 +129,7 @@ async def ime_handler(update, context):
         return IME
     context.user_data['ime'] = t
     dani = radni_dani()
+    logger.info(f"Radni dani: {len(dani)} dana pronadjeno")
     context.user_data['dani'] = [d.isoformat() for d in dani]
     btns = []
     row = []
@@ -140,7 +141,7 @@ async def ime_handler(update, context):
     btns.append(["🏠 Meni"])
     await update.message.reply_text(
         f"Hvala, {t}! 👋\n\n📅 Izaberite datum:\n(Pon-Sre = Novi Sad | Cet-Sub = Sid)",
-        reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True))
+        reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True, one_time_keyboard=True))
     return DATUM
 
 async def datum_handler(update, context):
@@ -179,7 +180,7 @@ async def datum_handler(update, context):
     radno = "15:00–20:00" if lok == "Novi Sad" else "09:00–13:00 i 15:00–21:00"
     await update.message.reply_text(
         f"📅 {fdatum_pun(d)}\n📍 {lok}\n⏰ {radno}\n\nIzaberite vreme:",
-        reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True))
+        reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True, one_time_keyboard=True))
     return VREME
 
 async def vreme_handler(update, context):
@@ -202,11 +203,11 @@ async def vreme_handler(update, context):
         if row: btns.append(row)
         btns.append(["🏠 Meni"])
         await update.message.reply_text("⚠️ Taj termin je upravo zauzet! Izaberite drugi:",
-            reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True))
+            reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True, one_time_keyboard=True))
         return VREME
     context.user_data['vreme'] = t
     btns = [["✂️ Sisanje — 1000 din"],["🪒 Brada — 500 din"],["✂️🪒 Sisanje + brada — 1500 din"],["🏠 Meni"]]
-    await update.message.reply_text("Koja usluga?", reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True))
+    await update.message.reply_text("Koja usluga?", reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True, one_time_keyboard=True))
     return USLUGA
 
 async def usluga_handler(update, context):
@@ -235,7 +236,7 @@ async def usluga_handler(update, context):
         f"✂️ {usluga}\n"
         f"💰 {cena}\n\n"
         f"Da li je sve tacno?",
-        reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True))
+        reply_markup=ReplyKeyboardMarkup(btns, resize_keyboard=True, one_time_keyboard=True))
     return POTVRDA
 
 async def potvrda_handler(update, context):
