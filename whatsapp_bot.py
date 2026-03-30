@@ -58,7 +58,7 @@ def slobodni(datum):
 def posalji(tel, tekst):
     try:
         r=requests.post(f"{BASE_URL}/waInstance{INSTANCE}/sendMessage/{TOKEN}",
-            json={"chatId":f"{tel}@c.us","message":tekst},timeout=10)
+            json={"chatId":f"{tel}@c.us","message":tekst},timeout=30)
         logger.info(f"→ {tel}: {r.status_code}")
     except Exception as e: logger.error(f"Greska: {e}")
 
