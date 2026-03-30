@@ -34,6 +34,7 @@ class Database:
                     lokacija    TEXT NOT NULL,
                     usluga      TEXT NOT NULL,
                     status      TEXT NOT NULL DEFAULT 'aktivan',
+                    telefon     TEXT DEFAULT '',
                     kreirano    TEXT NOT NULL DEFAULT (datetime('now'))
                 );
 
@@ -57,15 +58,25 @@ class Database:
 
     # ─── TERMINI ────────────────────────────────────────────────
 
-    def dodaj_termin(self, user_id: int, ime: str, datum: str,
-                     vreme: str, lokacija: str, usluga: str) -> int:
+    def dodaj_termin(self, user_id, ime, datum, vreme, lokacija, usluga, telefon=""):
         with self._get_conn() as conn:
             cur = conn.execute(
-                """INSERT INTO termini (user_id, ime, datum, vreme, lokacija, usluga)
-                   VALUES (?, ?, ?, ?, ?, ?)""",
-                (user_id, ime, datum, vreme, lokacija, usluga)
+                """INSERT INTO termini (user_id, ime, datum, vreme, lokacija, usluga, telefon)
+                   VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                (user_id, ime, datum, vreme, lokacija, usluga, telefon)
             )
             return cur.lastrowid
+
+    def get_termini_korisnika_telefon(self, telefon):
+        danas = date.today().isoformat()
+        with self._get_conn() as conn:
+            rows = conn.execute(
+                """SELECT * FROM termini
+                   WHERE telefon = ? AND datum >= ? AND status = 'aktivan'
+                   ORDER BY datum, vreme""",
+                (telefon, danas)
+            ).fetchall()
+            return [dict(r) for r in rows]
 
     def je_termin_zauzet(self, datum: date, vreme: str) -> bool:
         """Provjerava da li je termin zauzet (ukljucujuci fiksne)."""
