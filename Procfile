@@ -1,1 +1,1 @@
-web: python whatsapp_bot.py & python bot.py & wait
+web: python whatsapp_bot.py
